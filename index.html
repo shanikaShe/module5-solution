@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Ordering</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        nav {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        #home {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #007bff;
+            color: #ffffff;
+            text-align: center;
+        }
+        .tile {
+            padding: 20px;
+            font-size: 24px;
+            text-align: center;
+            color: #ffffff;
+            background-color: #007bff;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .tile:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        #menu-page, #order-page, #map-page {
+            display: none;
+            padding: 20px;
+            text-align: center;
+            max-width: 1200px;
+            margin: auto;
+        }
+        #menu-page h2, #order-page h2, #map-page h2 {
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .menu-item {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left;
+            transition: box-shadow 0.3s;
+        }
+        .menu-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .menu-item img {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        .menu-item-details {
+            flex: 1;
+        }
+        .menu-item h3 {
+            margin: 0;
+            font-size: 22px;
+            color: #333333;
+        }
+        .menu-item p {
+            margin: 5px 0;
+            color: #555555;
+        }
+        .menu-item .price {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .order-item {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left;
+        }
+        .order-item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        .order-item-details {
+            flex: 1;
+        }
+        #map {
+            height: 500px;
+            width: 100%;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#" id="home-link">Home</a>
+        <a href="#" id="menu-link">Menu</a>
+        <a href="#" id="specials-link">Specials</a>
+        <a href="#" id="map-link">Map</a>
+    </nav>
+
+    <div id="home">
+        <div class="tile" id="menu-tile">Menu</div>
+        <div class="tile" id="specials-tile">Specials</div>
+        <div class="tile" id="map-tile">Map</div>
+    </div>
+
+    <div id="menu-page">
+        <h2>Menu</h2>
+        <div id="menu-items"></div>
+    </div>
+
+    <div id="order-page">
+        <h2>Food Ordering</h2>
+        <div id="order-items"></div>
+    </div>
+
+    <div id="map-page">
+        <h2>Our Location</h2>
+        <div id="map"></div>
+    </div>
+
+    <script>
+        var menuItems = [
+            { name: "Grilled Chicken Sandwich", price: "$8.99", details: "A delicious grilled chicken sandwich with fresh vegetables and a tangy sauce.", image: "https://via.placeholder.com/120" },
+            { name: "Caesar Salad", price: "$7.99", details: "Crisp romaine lettuce with Caesar dressing, croutons, and Parmesan cheese.", image: "https://via.placeholder.com/120" },
+            { name: "Spaghetti Carbonara", price: "$12.99", details: "Classic Italian pasta with a creamy sauce, bacon, and Parmesan cheese.", image: "https://via.placeholder.com/120" },
+            { name: "Beef Steak", price: "$15.99", details: "Juicy beef steak served with mashed potatoes and grilled vegetables.", image: "https://via.placeholder.com/120" },
+            { name: "California Roll", price: "$10.99", details: "A popular sushi roll with crab, avocado, and cucumber.", image: "https://via.placeholder.com/120" },
+            { name: "Spicy Tuna Roll", price: "$11.99", details: "Delicious sushi roll with spicy tuna and fresh vegetables.", image: "https://via.placeholder.com/120" },
+            { name: "Chocolate Lava Cake", price: "$6.99", details: "Rich chocolate cake with a gooey molten center, served with vanilla ice cream.", image: "https://via.placeholder.com/120" },
+            { name: "Cheesecake", price: "$5.99", details: "Creamy cheesecake with a graham cracker crust and fresh fruit topping.", image: "https://via.placeholder.com/120" },
+            { name: "Mojito", price: "$8.99", details: "Refreshing cocktail with mint, lime, and rum.", image: "https://via.placeholder.com/120" },
+            { name: "Berry Smoothie", price: "$5.49", details: "Smoothie made with fresh berries and yogurt.", image: "https://via.placeholder.com/120" }
+        ];
+
+        var foodItems = {
+            "Lunch": [
+                { name: "Grilled Chicken Sandwich", image: "https://via.placeholder.com/120", details: "A delicious grilled chicken sandwich with fresh vegetables and a tangy sauce." },
+                { name: "Caesar Salad", image: "https://via.placeholder.com/120", details: "Crisp romaine lettuce with Caesar dressing, croutons, and Parmesan cheese." }
+            ],
+            "Dinner": [
+                { name: "Spaghetti Carbonara", image: "https://via.placeholder.com/120", details: "Classic Italian pasta with a creamy sauce, bacon, and Parmesan cheese." },
+                { name: "Beef Steak", image: "https://via.placeholder.com/120", details: "Juicy beef steak served with mashed potatoes and grilled vegetables." }
+            ],
+            "Sushi": [
+                { name: "California Roll", image: "https://via.placeholder.com/120", details: "A popular sushi roll with crab, avocado, and cucumber." },
+                { name: "Spicy Tuna Roll", image: "https://via.placeholder.com/120", details: "Delicious sushi roll with spicy tuna and fresh vegetables." }
+            ],
+            "Dessert": [
+                { name: "Chocolate Lava Cake", image: "https://via.placeholder.com/120", details: "Rich chocolate cake with a gooey molten center, served with vanilla ice cream." },
+                { name: "Cheesecake", image: "https://via.placeholder.com/120", details: "Creamy cheesecake with a graham cracker crust and fresh fruit topping." }
+            ],
+            "Drinks": [
+                { name: "Mojito", image: "https://via.placeholder.com/120", details: "Refreshing cocktail with mint, lime, and rum." },
+                { name: "Berry Smoothie", image: "https://via.placeholder.com/120", details: "Smoothie made with fresh berries and yogurt." }
+            ]
+        };
+
+        function getRandomCategory() {
+            var categories = Object.keys(foodItems);
+            var randomIndex = Math.floor(Math.random() * categories.length);
+            return categories[randomIndex];
+        }
+
+        function displayMenuItems() {
+            var menuItemsDiv = document.getElementById('menu-items');
+            menuItemsDiv.innerHTML = '';
+
+            menuItems.forEach(function(item) {
+                var itemDiv = document.createElement('div');
+                itemDiv.className = 'menu-item';
+                itemDiv.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="menu-item-details">
+                        <h3>${item.name}</h3>
+                        <p class="price">${item.price}</p>
+                        <p>${item.details}</p>
+                    </div>
+                `;
+                menuItemsDiv.appendChild(itemDiv);
+            });
+        }
+
+        function displayOrderItems(category) {
+            var items = foodItems[category];
+            var orderItemsDiv = document.getElementById('order-items');
+            orderItemsDiv.innerHTML = '';
+
+            items.forEach(function(item) {
+                var itemDiv = document.createElement('div');
+                itemDiv.className = 'order-item';
+                itemDiv.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="order-item-details">
+                        <h3>${item.name}</h3>
+                        <p>${item.details}</p>
+                    </div>
+                `;
+                orderItemsDiv.appendChild(itemDiv);
+            });
+        }
+
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 40.712776, lng: -74.005974 }, // Coordinates of New York City
+                zoom: 12
+            });
+
+            var marker = new google.maps.Marker({
+                position: { lat: 40.712776, lng: -74.005974 }, // Coordinates of New York City
+                map: map,
+                title: 'Our Location'
+            });
+        }
+
+        document.getElementById('home-link').addEventListener('click', function() {
+            document.getElementById('home').style.display = 'flex';
+            document.getElementById('menu-page').style.display = 'none';
+            document.getElementById('order-page').style.display = 'none';
+            document.getElementById('map-page').style.display = 'none';
+        });
+
+        document.getElementById('menu-link').addEventListener('click', function() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('menu-page').style.display = 'block';
+            document.getElementById('order-page').style.display = 'none';
+            document.getElementById('map-page').style.display = 'none';
+            displayMenuItems();
+        });
+
+        document.getElementById('specials-link').addEventListener('click', function() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('menu-page').style.display = 'none';
+            document.getElementById('order-page').style.display = 'block';
+            document.getElementById('map-page').style.display = 'none';
+            var category = getRandomCategory();
+            displayOrderItems(category);
+        });
+
+        document.getElementById('map-link').addEventListener('click', function() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('menu-page').style.display = 'none';
+            document.getElementById('order-page').style.display = 'none';
+            document.getElementById('map-page').style.display = 'block';
+            initMap();
+        });
+
+        document.getElementById('menu-tile').addEventListener('click', function() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('menu-page').style.display = 'block';
+            document.getElementById('order-page').style.display = 'none';
+            document.getElementById('map-page').style.display = 'none';
+            displayMenuItems();
+        });
+
+        document.getElementById('specials-tile').addEventListener('click', function() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('menu-page').style.display = 'none';
+            document.getElementById('order-page').style.display = 'block';
+            document.getElementById('map-page').style.display = 'none';
+            var category = getRandomCategory();
+            displayOrderItems(category);
+        });
+
+        document.getElementById('map-tile').addEventListener('click', function() {
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('menu-page').style.display = 'none';
+            document.getElementById('order-page').style.display = 'none';
+            document.getElementById('map-page').style.display = 'block';
+            initMap();
+        });
+
+        // Default view
+        document.getElementById('home').style.display = 'flex';
+    </script>
+    <script src="https://www.google.com/maps/place/Hungry+Restaurant+Galle/@6.0345856,80.2120624,17z/data=!3m1!4b1!4m6!3m5!1s0x3ae17391fe631587:0xdee8cef739d09919!8m2!3d6.0345856!4d80.2146427!16s%2Fg%2F11j8k10f5r?entry=ttu&g_ep=EgoyMDI0MDgyMC4xIKXMDSoASAFQAw%3D%3D"></script>
+</body>
+</html>
